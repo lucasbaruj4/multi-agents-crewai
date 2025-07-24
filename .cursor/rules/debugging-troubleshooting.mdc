@@ -1,0 +1,60 @@
+# Debugging and Troubleshooting
+
+## Systematic Debugging Approach
+
+- Start with the simplest possible test case
+- Isolate issues by testing components individually
+- Check API keys and permissions first for external service failures
+- Verify data formats and schemas at each step
+- Use verbose logging to trace execution flow
+
+## Common Issues to Watch For
+
+- Rate limiting on external APIs (Serper, Firecrawl, etc.)
+- Model context length limits
+- File path issues between local development and Colab
+- Memory limitations with large models
+- Timeout issues with long-running tasks
+
+## Recovery Strategies
+
+- Implement save/resume functionality for long processes
+- Create manual override options for failed tasks
+- Keep intermediate results accessible for inspection
+- Design tasks to be re-runnable without side effects
+
+## Debugging Checklist
+
+When encountering issues:
+
+1. **Environment Check**
+   - [ ] Colab runtime is active and has sufficient resources
+   - [ ] All required packages are installed
+   - [ ] API keys are properly configured in Colab Secrets
+
+2. **Data Validation**
+   - [ ] Input data format is correct
+   - [ ] File paths are valid and accessible
+   - [ ] Data size is within acceptable limits
+
+3. **API and Service Check**
+   - [ ] External APIs are responding
+   - [ ] Rate limits haven't been exceeded
+   - [ ] Authentication is working
+
+4. **Resource Monitoring**
+   - [ ] Memory usage is within limits
+   - [ ] GPU/CPU resources are available
+   - [ ] Disk space is sufficient
+
+## Error Handling Best Practices
+
+- Always catch and log specific exceptions
+- Provide actionable error messages
+- Implement graceful degradation for non-critical failures
+- Use timeouts for external API calls
+- Retry transient failures with exponential backoff
+description:
+globs:
+alwaysApply: false
+---

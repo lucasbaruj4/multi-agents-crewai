@@ -1,0 +1,28 @@
+# Execution Environment Rules
+
+## NEVER Execute Code Locally in Cursor
+
+**Rule #1:** Code is written and developed in Cursor, but ONLY executed in Google Colab
+**Rule #2:** Do not run any Python scripts, install packages, or execute commands in Cursor's terminal for this project
+**Rule #3:** Cursor is for writing, editing, refactoring, and code organization ONLY
+**Rule #4:** All package installations (!pip install) should only happen in Colab cells
+**Rule #5:** File operations, API calls, and model loading should only occur in Colab environment
+
+## Colab-Specific Considerations
+
+- Remember Colab sessions are temporary - files will be lost when runtime disconnects
+- Use Google Drive mounting for persistent storage when needed
+- Be aware of Colab's resource limits (GPU hours, RAM, disk space)
+- Test resource-intensive operations in small batches first
+- Always save important outputs to Drive or download them
+
+## Development Workflow
+
+1. **Write code in Cursor** - Use Cursor for all code development, refactoring, and organization
+2. **Copy to Colab** - Transfer code blocks to Google Colab for execution
+3. **Execute in Colab** - Run all Python code, install packages, and perform operations in Colab
+4. **Test and iterate** - Use Colab for testing, then return to Cursor for improvements
+description:
+globs:
+alwaysApply: false
+---

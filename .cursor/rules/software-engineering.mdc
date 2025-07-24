@@ -1,0 +1,60 @@
+# Software Engineering Best Practices
+
+## Code Organization
+
+- Separate concerns: agents, tasks, tools, and configuration in logical sections
+- Use meaningful variable and function names
+- Keep functions focused on single responsibilities
+- Group related imports together
+- Use consistent naming conventions throughout the project
+
+## Error Handling and Resilience
+
+- Implement proper try-catch blocks for external API calls
+- Handle rate limiting and API timeouts gracefully
+- Provide meaningful error messages for debugging
+- Add retry logic for transient failures
+- Validate inputs before processing
+
+## Configuration Management
+
+- Centralize configuration values (model names, file paths, etc.)
+- Use constants for magic numbers and strings
+- Make parameters easily adjustable without code changes
+- Document configuration options and their effects
+
+## Testing and Validation
+
+- Test individual components before integrating into the crew
+- Validate data formats and schemas
+- Test with small datasets before running full operations
+- Implement checkpoints for long-running processes
+- Keep backup copies of working configurations
+
+## Performance Considerations
+
+- Monitor token usage and API costs
+- Implement efficient data processing patterns
+- Use appropriate batch sizes for operations
+- Clear unused variables and objects to free memory
+- Profile resource-heavy operations
+
+## Version Control Best Practices
+
+- Commit working versions before major changes
+- Use descriptive commit messages
+- Keep sensitive configuration separate from code
+- Create branches for experimental features
+- Tag stable releases
+
+## File Management
+
+- Use consistent directory structures (`output/`, `output_charts/`, `output/reports/`)
+- Implement proper file path handling for cross-platform compatibility
+- Clean up temporary files after processing
+- Validate file existence before operations
+- Use appropriate file naming conventions
+description:
+globs:
+alwaysApply: false
+---

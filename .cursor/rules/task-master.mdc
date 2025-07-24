@@ -1,0 +1,88 @@
+# Task Master Rule - CrewAI Multi-Agent System
+
+## Core Behavior
+ALWAYS maintain tasks.md at project root
+CREATE if the file is not already there
+UPDATE task status when completing work
+READ tasks before starting to prioritize work
+CREATE new tasks when identifying additional work needed
+
+## Task File Format
+```markdown
+# Project Tasks
+
+## Dashboard
+**Progress:** [X/Total] ([%]%)
+**Status:** Done: X | In Progress: X | Pending: X | Blocked: X | Deferred: X
+
+## Tasks
+
+| ID | Status | Priority | Title | Dependencies |
+|----|--------|----------|-------|--------------|
+| 1 | done | high | Setup Colab Mistral Server | None |
+| 2 | done | high | Configure Localtunnel Connection | 1 |
+| 3 | done | high | Test Local-Colab Connection | 2 |
+| 4 | pending | high | Integrate Mistral with CrewAI Agents | 3 |
+| 5 | pending | medium | Implement Web Scraping Tools | 4 |
+| 6 | pending | medium | Add Data Analysis Agents | 5 |
+| 7 | pending | medium | Create PDF Report Generation | 6 |
+| 8 | pending | low | Add Market Trend Analysis | 7 |
+| 9 | pending | low | Implement Competitor Strategy Analysis | 8 |
+```
+
+## Status Types
+- **done** - Completed
+- **in-progress** - Currently working on
+- **pending** - Ready to start
+- **blocked** - Waiting on dependency/external factor
+- **deferred** - Postponed
+
+## Priority Levels
+- **high** - Critical/urgent
+- **medium** - Important but not urgent
+- **low** - Nice to have
+
+## Task Management Rules
+- Auto-update dashboard when task status changes
+- Check dependencies before starting tasks
+- Create subtasks for complex work (use nested bullet points)
+- Reference task ID in chatlog.md entries when working on specific tasks
+- Add new tasks when discovering additional work during development
+
+## Project-Specific Tasks
+### Completed Tasks
+- ✅ Setup Mistral model in Google Colab
+- ✅ Configure Flask API server
+- ✅ Establish Localtunnel connection
+- ✅ Test local-to-Colab communication
+- ✅ Create reusable client components
+
+### Current Focus
+- 🔄 Integrate Mistral model with CrewAI agents
+- 🔄 Implement web scraping functionality
+- 🔄 Build data analysis pipeline
+
+### Future Tasks
+- 📋 Create PDF report generation
+- 📋 Add market trend analysis
+- 📋 Implement competitor strategy analysis
+- 📋 Add executive summary generation
+- 📋 Create visualization components
+
+## File Structure
+- `Multi_AI_Agent_Systems_with_CrewAI.ipynb` - Main project notebook
+- `local_mistral_client.py` - Colab connection client
+- `crewai_mistral_integration.py` - CrewAI integration
+- `test_mistral_connection.py` - Connection testing
+- `chatlog.md` - Project interaction log
+- `tasks.md` - Task tracking (to be created)
+
+## Integration Notes
+- Mistral model runs on Colab GPU (A100)
+- Access via: https://mistral-server.loca.lt
+- Use headers: {'bypass-tunnel-reminder': 'true'}
+- Model: mistralai/Mistral-7B-Instruct-v0.3
+description:
+globs:
+alwaysApply: false
+---

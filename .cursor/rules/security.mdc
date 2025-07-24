@@ -1,0 +1,38 @@
+# Security Rules
+
+## API Keys and Secrets Management
+
+**NEVER hardcode API keys, tokens, or passwords in source code**
+
+- Use Google Colab's `userdata.get()` for accessing secrets stored in Colab Secrets
+- Store all sensitive credentials in Colab Secrets, not in code files
+- Use environment variables pattern: `os.environ["API_KEY"] = userdata.get("API_KEY")`
+- Regularly rotate API keys and tokens
+- Review code before sharing to ensure no secrets are exposed
+
+## Data Security
+
+- Be cautious with sensitive data uploads to Colab
+- Use encrypted connections for data transfers when possible
+- Implement proper error handling to avoid exposing sensitive information in logs
+- Clear sensitive data from memory when no longer needed
+- Be aware that Colab logs may contain sensitive information
+
+## Access Control
+
+- Keep Colab notebooks private unless intentionally sharing
+- Use IAM and sharing permissions appropriately
+- Regularly review who has access to your notebooks and data
+- Use service accounts for production-like workflows
+
+## Code Review Checklist
+
+Before sharing or committing code:
+- [ ] No hardcoded API keys or secrets
+- [ ] No sensitive data in comments or variable names
+- [ ] Error messages don't expose internal information
+- [ ] All credentials use secure storage methods
+description:
+globs:
+alwaysApply: false
+---

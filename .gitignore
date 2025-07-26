@@ -1,10 +1,12 @@
+# Cursor IDE and Context Files (Keep Local Only)
+.cursor/
+*.mdc
+
 # Private Interaction Files (Keep Local Only)
 chatlog.md
-*.mdc
-.cursor/rules/
-README_COLAB_CONNECTION.md
-cursor_memory_colab_model_connection.md
 tasks.md
+cursor_memory_colab_model_connection.md
+README_COLAB_CONNECTION.md
 
 # Python
 __pycache__/

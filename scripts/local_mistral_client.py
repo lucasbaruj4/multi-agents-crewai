@@ -7,47 +7,57 @@ import requests
 import json
 import time
 from typing import Optional, Dict, Any
+from connection_credentials import (
+    COLAB_MISTRAL_URL, 
+    HEALTH_ENDPOINT, 
+    GENERATE_ENDPOINT, 
+    MODEL_INFO_ENDPOINT,
+    LOCALTUNNEL_HEADERS,
+    DEFAULT_TIMEOUT,
+    HEALTH_CHECK_TIMEOUT,
+    GENERATION_TIMEOUT,
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_TEMPERATURE
+)
 
 class ColabMistralClient:
-    def __init__(self, colab_url: str):
+    def __init__(self, colab_url: str = None):
         """
         Initialize the client
         
         Args:
-            colab_url: The URL of your Colab notebook (e.g., 'https://colab.research.google.com/drive/...')
+            colab_url: Optional URL override (uses connection_credentials.py by default)
         """
-        self.base_url = self._extract_api_url(colab_url)
+        self.base_url = COLAB_MISTRAL_URL if colab_url is None else colab_url
         self.session = requests.Session()
-        
-    def _extract_api_url(self, colab_url: str) -> str:
-        """
-        Extract the API URL from Colab notebook URL
-        Updated with localtunnel URL
-        """
-        # Updated with the actual localtunnel URL
-        return "https://mistral-server.loca.lt"
+        # Set default headers for all requests
+        self.session.headers.update(LOCALTUNNEL_HEADERS)
     
     def health_check(self) -> Dict[str, Any]:
         """Check if the API server is healthy"""
         try:
-            response = self.session.get(f"{self.base_url}/health")
+            response = self.session.get(HEALTH_ENDPOINT, timeout=HEALTH_CHECK_TIMEOUT)
             return response.json()
         except Exception as e:
             return {"error": str(e), "status": "unhealthy"}
     
-    def generate_text(self, prompt: str, max_tokens: int = 512, temperature: float = 0.5) -> Dict[str, Any]:
+    def generate_text(self, prompt: str, max_tokens: int = None, temperature: float = None) -> Dict[str, Any]:
         """
         Generate text using the remote Mistral model
         
         Args:
             prompt: The input prompt
-            max_tokens: Maximum tokens to generate
-            temperature: Sampling temperature
+            max_tokens: Maximum tokens to generate (uses DEFAULT_MAX_TOKENS if None)
+            temperature: Sampling temperature (uses DEFAULT_TEMPERATURE if None)
             
         Returns:
             Dictionary with response and metadata
         """
         try:
+            # Use defaults from connection_credentials if not provided
+            max_tokens = max_tokens if max_tokens is not None else DEFAULT_MAX_TOKENS
+            temperature = temperature if temperature is not None else DEFAULT_TEMPERATURE
+            
             payload = {
                 "prompt": prompt,
                 "max_tokens": max_tokens,
@@ -55,9 +65,9 @@ class ColabMistralClient:
             }
             
             response = self.session.post(
-                f"{self.base_url}/generate",
+                GENERATE_ENDPOINT,
                 json=payload,
-                timeout=60  # 60 second timeout
+                timeout=GENERATION_TIMEOUT
             )
             
             if response.status_code == 200:
@@ -73,15 +83,15 @@ class ColabMistralClient:
     def get_model_info(self) -> Dict[str, Any]:
         """Get information about the loaded model"""
         try:
-            response = self.session.get(f"{self.base_url}/model_info")
+            response = self.session.get(MODEL_INFO_ENDPOINT, timeout=HEALTH_CHECK_TIMEOUT)
             return response.json()
         except Exception as e:
             return {"error": str(e)}
 
 # Example usage
 if __name__ == "__main__":
-    # Initialize client
-    client = ColabMistralClient("your_colab_url_here")
+    # Initialize client (uses connection_credentials.py by default)
+    client = ColabMistralClient()
     
     # Check health
     health = client.health_check()

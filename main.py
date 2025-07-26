@@ -18,9 +18,7 @@ from src.tasks import (
     identify_reg_ethic_shift,
     compile_all
 )
-from src.llm import ColabMistralLLM
-from scripts.local_mistral_client import ColabMistralClient
-from config.connection_credentials import COLAB_MISTRAL_URL
+from src.llm.colab_mistral_llm import test_colab_mistral_llm
 
 
 def setup_environment():
@@ -56,24 +54,22 @@ def setup_environment():
     return True
 
 
-def test_connection():
-    """Test connection to Colab Mistral server"""
-    print("🔗 Testing connection to Colab Mistral server...")
+def test_llm_integration():
+    """Test CrewAI LLM integration with Colab Mistral server"""
+    print("🤖 Testing CrewAI LLM integration...")
     
     try:
-        client = ColabMistralClient()
-        health = client.health_check()
-        
-        if health.get("status") == "healthy":
-            print("✅ Colab server is healthy!")
+        success = test_colab_mistral_llm()
+        if success:
+            print("✅ CrewAI LLM integration working!")
             return True
         else:
-            print(f"❌ Colab server is not healthy: {health}")
+            print("❌ CrewAI LLM integration failed")
             return False
             
     except Exception as e:
-        print(f"❌ Connection failed: {e}")
-        print("Please ensure the Colab server is running at:", COLAB_MISTRAL_URL)
+        print(f"❌ LLM integration test failed: {e}")
+        print("Please ensure the Colab server is running with OpenAI-compatible endpoints")
         return False
 
 
@@ -81,7 +77,7 @@ def create_crew():
     """Create the research crew with all agents and tasks"""
     print("🤖 Creating research crew...")
     
-    # Create agents with Colab Mistral LLM
+    # Create agents (they will use the default Colab Mistral LLM)
     archivist = Archivist
     shadow = Shadow  
     seer = Seer
@@ -118,8 +114,8 @@ def main():
     if not setup_environment():
         return
     
-    # Test connection
-    if not test_connection():
+    # Test LLM integration
+    if not test_llm_integration():
         return
     
     # Create crew

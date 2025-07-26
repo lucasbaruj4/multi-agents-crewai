@@ -6,35 +6,30 @@ Expert in dissecting competitor strategies for the multi-agent research system.
 """
 
 from crewai import Agent
-from crewai_tools import FirecrawlScrapeWebsiteTool
-from ..llm import ColabMistralLLM
+from ..llm.colab_mistral_llm import create_colab_mistral_llm
 
 
-def create_shadow_agent(llm: ColabMistralLLM = None) -> Agent:
+def create_shadow_agent(llm=None) -> Agent:
     """
-    Create the Shadow agent for competitor analysis
+    Create the Shadow agent for competitive intelligence
     
     Args:
-        llm: LLM instance (uses ColabMistralLLM by default)
+        llm: LLM instance (uses Colab Mistral LLM by default)
         
     Returns:
         Configured Shadow agent
     """
     if llm is None:
-        llm = ColabMistralLLM(temperature=0.4)
-    
-    # Initialize web scraping tool
-    web_crawl_scrape_tool = FirecrawlScrapeWebsiteTool()
+        llm = create_colab_mistral_llm(temperature=0.4)
     
     return Agent(
-        role="Expert in dissecting competitor strategies",
-        goal="Provide detailed, relevant and useful insights into competitor products, pricing, marketing, general business strategies and market position",
-        backstory="""You are 'Shadow', a highly decorated Competitive Intelligence Strategist, formerly leading the CI division for a Fortune 100 tech giant. Your expertise is in dissecting competitor moves, product launches, pricing models, marketing campaigns and business strategies with surgical precision. Currently, your mission is to provide 'MostlyOpenAI,' a specialist in enterprise-grade, customizable LLMs, with a clear understanding of its rivals. You think like a rival CEO, anticipating their next move and providing actionable insights into their vulnerabilities and strengths.""",
+        role="Expert in dissecting competitor strategies and positioning",
+        goal="Conduct thorough competitive intelligence analysis, understanding the strategic positioning and tactical approaches of competitors in the enterprise LLM space",
+        backstory="""You are 'Shadow', a former military intelligence analyst turned corporate strategist, now working as a senior competitive intelligence expert for major technology consulting firms. Your analytical prowess stems from years of experience in extracting meaningful insights from limited public information, understanding strategic positioning, and predicting competitor moves. You excel at reading between the lines of marketing materials, press releases, and public statements to uncover the real strategic intent and positioning. Your current mission is to provide 'MostlyOpenAI' with deep competitive intelligence that will inform their market positioning and strategic decisions.""",
         llm=llm,
-        tools=[web_crawl_scrape_tool],
         verbose=True
     )
 
 
-# Default instance
+# Default instance with LLM properly set
 Shadow = create_shadow_agent() 

@@ -37,6 +37,11 @@ GENERATE_ENDPOINT = f"{COLAB_MISTRAL_URL}/generate"
 # Model information endpoint
 MODEL_INFO_ENDPOINT = f"{COLAB_MISTRAL_URL}/model_info"
 
+# OpenAI-compatible endpoints for CrewAI integration
+OPENAI_BASE_URL = f"{COLAB_MISTRAL_URL}/v1"
+OPENAI_CHAT_COMPLETIONS_ENDPOINT = f"{COLAB_MISTRAL_URL}/v1/chat/completions"
+OPENAI_COMPLETIONS_ENDPOINT = f"{COLAB_MISTRAL_URL}/v1/completions"
+
 # =============================================================================
 # CONNECTION HEADERS
 # =============================================================================

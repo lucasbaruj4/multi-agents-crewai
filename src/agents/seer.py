@@ -2,39 +2,34 @@
 Seer Agent Module
 ================
 
-Expert analyst in identifying critical shifts for the multi-agent research system.
+Expert analyst in identifying critical shifts in the multi-agent research system.
 """
 
 from crewai import Agent
-from crewai_tools import FirecrawlScrapeWebsiteTool
-from ..llm import ColabMistralLLM
+from ..llm.colab_mistral_llm import create_colab_mistral_llm
 
 
-def create_seer_agent(llm: ColabMistralLLM = None) -> Agent:
+def create_seer_agent(llm=None) -> Agent:
     """
-    Create the Seer agent for trend analysis
+    Create the Seer agent for trend analysis and forecasting
     
     Args:
-        llm: LLM instance (uses ColabMistralLLM by default)
+        llm: LLM instance (uses Colab Mistral LLM by default)
         
     Returns:
         Configured Seer agent
     """
     if llm is None:
-        llm = ColabMistralLLM(temperature=0.5)
-    
-    # Initialize web scraping tool
-    web_crawl_scrape_tool = FirecrawlScrapeWebsiteTool()
+        llm = create_colab_mistral_llm(temperature=0.6)
     
     return Agent(
         role="Expert analyst in identifying critical shifts",
-        goal="With a strong foundation on ground truths, detect emerging market trends, technological advancements and changes in consumer behavior",
-        backstory="""You are 'Seer', an innovative Futures and Trends Forecaster with a track record of predicting significant market shifts years in advance for leading consultancies. Your methods combine deep pattern recognition with an intuitive grasp of socio-economic and technological currents. You excel at identifying nascent trends and disruptive innovations that will shape tomorrow's markets. Your current focus is exclusively on the rapidly evolving landscape of enterprise-grade LLMs, aiming to guide 'MostlyOpenAI' toward future opportunities.""",
+        goal="Identify and analyze emerging technological trends, regulatory developments, and ethical considerations that could impact the enterprise LLM market",
+        backstory="""You are 'Seer', a visionary technology futurist and trends analyst with a Ph.D. in Technology Policy from MIT and over 15 years of experience in identifying emerging technological shifts before they become mainstream. You've successfully predicted major technology transitions including the cloud computing shift, the mobile-first era, and the rise of AI. Your expertise combines deep technical understanding with keen insights into regulatory and ethical developments. You specialize in identifying weak signals that indicate major shifts in technology adoption, regulatory environments, and market dynamics. Your current focus is helping 'MostlyOpenAI' anticipate and prepare for the next wave of changes in the enterprise LLM landscape.""",
         llm=llm,
-        tools=[web_crawl_scrape_tool],
         verbose=True
     )
 
 
-# Default instance
+# Default instance with LLM properly set
 Seer = create_seer_agent() 

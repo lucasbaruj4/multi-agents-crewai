@@ -6,7 +6,6 @@ Market analysis tasks and workflows for the multi-agent research system.
 """
 
 from crewai import Task
-from ..agents import Archivist, Shadow, Seer, Nexus
 
 
 def create_market_analysis_tasks():
@@ -16,6 +15,9 @@ def create_market_analysis_tasks():
     Returns:
         List of configured tasks
     """
+    
+    # Import agents here to avoid circular imports
+    from ..agents import Archivist, Shadow, Seer, Nexus
     
     # Research tasks
     identify_key_market_segments = Task(

@@ -7,8 +7,11 @@ python-dotenv>=1.0.0
 # HTTP Requests
 requests>=2.31.0
 
-# Google Generative AI
-google-generativeai>=0.8.0
+# LLM Providers (Multiple Support)
+google-generativeai>=0.8.0  # Google Gemini
+openai>=1.0.0              # OpenAI GPT
+anthropic>=0.18.0          # Anthropic Claude
+mistralai>=0.0.10          # Mistral AI
 
 # Data Processing and Visualization
 pandas>=2.0.0

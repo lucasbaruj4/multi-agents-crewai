@@ -6,7 +6,7 @@ Expert in dissecting competitor strategies for the multi-agent research system.
 """
 
 from crewai import Agent
-from ..llm.gemini_llm import create_gemini_llm_standard
+from ..llm import create_standard_llm
 
 
 def create_shadow_agent(llm=None) -> Agent:
@@ -20,7 +20,7 @@ def create_shadow_agent(llm=None) -> Agent:
         Configured Shadow agent
     """
     if llm is None:
-        llm = create_gemini_llm_standard()  # Standard for analysis tasks
+        llm = create_standard_llm()  # Standard for analysis tasks
     
     return Agent(
         role="Expert in dissecting competitor strategies and positioning",

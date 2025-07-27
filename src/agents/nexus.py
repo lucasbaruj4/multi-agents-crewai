@@ -6,7 +6,7 @@ Expert in concise and actionable reporting for the multi-agent research system.
 """
 
 from crewai import Agent
-from ..llm.gemini_llm import create_gemini_llm_standard
+from ..llm import create_standard_llm
 
 
 def create_nexus_agent(llm=None) -> Agent:
@@ -20,7 +20,7 @@ def create_nexus_agent(llm=None) -> Agent:
         Configured Nexus agent
     """
     if llm is None:
-        llm = create_gemini_llm_standard()  # Standard for synthesis tasks
+        llm = create_standard_llm()  # Standard for synthesis tasks
     
     return Agent(
         role="Expert in concise and actionable reporting",

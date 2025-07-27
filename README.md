@@ -2,11 +2,12 @@
 
 A sophisticated multi-agent research system for enterprise LLM market analysis using CrewAI and optimized Gemini models.
 
-## 🎯 **NEW: COMPANY PERSONALIZATION + OPTIMIZED API USAGE**
+## 🎯 **NEW: SEAMLESS MODEL SWITCHING + COMPANY PERSONALIZATION + OPTIMIZED API USAGE**
 
-This system now features **company-specific personalization** with **executive-friendly questionnaire** and **optimized Gemini API usage** with **75-80% reduction** in token consumption while maintaining high-quality market analysis capabilities.
+This system now features **seamless model switching** (change API key = change model), **company-specific personalization** with **executive-friendly questionnaire**, and **optimized API usage** with **75-80% reduction** in token consumption while maintaining high-quality market analysis capabilities.
 
 ### **Key Features:**
+- **Seamless Model Switching**: Change API key = change model (Gemini, OpenAI, Anthropic, Mistral)
 - **Company Personalization**: Executive-friendly questionnaire for targeted research
 - **Smart Context Injection**: Company-specific insights within token budget
 - **7 tasks → 4 tasks** (43% reduction)
@@ -46,7 +47,7 @@ All tasks produce structured JSON outputs with specific schemas for efficient mu
 
 ### **Prerequisites**
 - Python 3.8+
-- Google API key (for Gemini model)
+- **LLM API key** (choose one: Google Gemini, OpenAI, Anthropic, or Mistral)
 - SerperDev API key (for web search)
 - Firecrawl API key (for web scraping)
 
@@ -65,7 +66,13 @@ All tasks produce structured JSON outputs with specific schemas for efficient mu
 3. **Configure environment variables**
    Create a `.env.local` file in the project root:
    ```env
-   GOOGLE_API_KEY=your_google_api_key_here
+   # Choose ONE LLM provider (change this to switch models seamlessly):
+   GEN_MODEL_API=your_gemini_api_key_here          # Google Gemini
+   # OPENAI_API_KEY=your_openai_api_key_here      # OpenAI GPT
+   # ANTHROPIC_API_KEY=your_anthropic_api_key_here # Anthropic Claude
+   # MISTRAL_API_KEY=your_mistral_api_key_here    # Mistral AI
+   
+   # Web search and scraping (required):
    SERPER_API_KEY=your_serper_api_key_here
    FIRECRAWL_API_KEY=your_firecrawl_api_key_here
    ```
@@ -81,7 +88,7 @@ The system will:
 1. **First Time**: Guide you through a 5-10 minute company profile questionnaire
 2. **Returning**: Load your existing company profile (or offer to update it)
 3. Load environment variables from `.env.local`
-4. Test Gemini integration
+4. **Auto-detect and test LLM provider** (Gemini, OpenAI, Anthropic, or Mistral)
 5. Create personalized agents and tasks for your company
 6. Execute targeted market analysis workflow
 7. Generate company-specific structured results
@@ -124,7 +131,7 @@ Multi AI-Agent Systems with CrewAI/
 ├── src/
 │   ├── agents/           # Agent definitions (Archivist, Shadow, Nexus)
 │   ├── tasks/            # Market analysis tasks (4 optimized tasks)
-│   ├── llm/              # LLM integration (Gemini optimized)
+│   ├── llm/              # LLM integration (unified model config)
 │   ├── tools/            # Utility tools (PDF, plotting)
 │   ├── company_profile/  # Company profile management & questionnaire
 │   └── templates/        # Context injection & template management
@@ -132,7 +139,8 @@ Multi AI-Agent Systems with CrewAI/
 ├── output/               # Generated reports and charts
 ├── config/               # Configuration files (including company_profile.json)
 ├── scripts/              # Utility scripts
-├── docs/                 # Documentation
+├── docs/                 # Documentation (including model switching guide)
+├── test_model_switching.py # Model switching test script
 ├── main.py               # Main execution script
 ├── requirements.txt      # Dependencies
 └── .env.local           # Environment variables (not in git)
@@ -141,12 +149,22 @@ Multi AI-Agent Systems with CrewAI/
 ## 🔧 Configuration
 
 ### **API Keys Required**
-- **GOOGLE_API_KEY**: For Gemini model access
+- **LLM API Key** (choose one):
+  - `GEN_MODEL_API`: For Google Gemini models
+  - `OPENAI_API_KEY`: For OpenAI GPT models
+  - `ANTHROPIC_API_KEY`: For Anthropic Claude models
+  - `MISTRAL_API_KEY`: For Mistral AI models
 - **SERPER_API_KEY**: For web search capabilities
 - **FIRECRAWL_API_KEY**: For web scraping
 
 ### **Model Configuration**
-The system uses `gemini/gemini-2.0-flash-lite` for optimal cost efficiency with:
+The system automatically selects the most cost-efficient model from your chosen provider:
+- **Google Gemini**: `gemini-2.0-flash-lite` (high efficiency)
+- **OpenAI**: `gpt-3.5-turbo` (high efficiency)
+- **Anthropic**: `claude-3-haiku` (high efficiency)
+- **Mistral**: `mistral-medium` (high efficiency)
+
+**Optimization Settings:**
 - Temperature: 0.1-0.3 (focused responses)
 - Max tokens: 150-300 (strict limits)
 - Timeout: 60 seconds
@@ -171,7 +189,39 @@ The system uses `gemini/gemini-2.0-flash-lite` for optimal cost efficiency with:
 - **Strategic Recommendations**: Actionable insights aligned with your goals
 - **Structured Outputs**: JSON-formatted results with company context
 
-## 🔄 Rollback to Mistral
+## 🔄 Model Switching
+
+### **Seamless Provider Switching**
+To switch between different LLM providers, simply change your `.env.local` file:
+
+**Switch to OpenAI:**
+```env
+# Comment out or remove other LLM keys
+# GEN_MODEL_API=your_gemini_key
+OPENAI_API_KEY=your_openai_key
+# ANTHROPIC_API_KEY=your_anthropic_key
+# MISTRAL_API_KEY=your_mistral_key
+```
+
+**Switch to Anthropic:**
+```env
+# GEN_MODEL_API=your_gemini_key
+# OPENAI_API_KEY=your_openai_key
+ANTHROPIC_API_KEY=your_anthropic_key
+# MISTRAL_API_KEY=your_mistral_key
+```
+
+**Switch to Mistral:**
+```env
+# GEN_MODEL_API=your_gemini_key
+# OPENAI_API_KEY=your_openai_key
+# ANTHROPIC_API_KEY=your_anthropic_key
+MISTRAL_API_KEY=your_mistral_key
+```
+
+The system will automatically detect and use the new provider - **no code changes needed!**
+
+### **Legacy Mistral Setup**
 
 If you need to switch back to the Mistral setup:
 1. All Mistral files are preserved in `mistral_connection/` folder
@@ -201,4 +251,4 @@ For issues and questions:
 
 ---
 
-**Status**: ✅ **PRODUCTION READY** - Company personalization + optimized API usage with high-quality targeted results 
+**Status**: ✅ **PRODUCTION READY** - Seamless model switching + company personalization + optimized API usage with high-quality targeted results 

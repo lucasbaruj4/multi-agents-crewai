@@ -17,7 +17,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from src.agents import create_archivist_agent, create_shadow_agent, create_nexus_agent
 from src.tasks import create_market_analysis_tasks
-from src.llm.gemini_llm import create_gemini_llm_standard
+from src.llm import create_standard_llm, ModelConfig
 from src.company_profile import CompanyProfile, run_questionnaire
 from src.templates.context_injector import create_context_injector
 
@@ -32,12 +32,11 @@ def setup_environment():
         print(f"✅ Loading environment variables from {env_file}")
         load_dotenv(env_file)
         
-        # Check if keys were loaded successfully
-        if os.getenv("SERPER_API_KEY") and os.getenv("FIRECRAWL_API_KEY") and os.getenv("GOOGLE_API_KEY"):
-            print("✅ API keys loaded successfully from .env.local")
-            return True
+        # Check if web search keys were loaded successfully
+        if os.getenv("SERPER_API_KEY") and os.getenv("FIRECRAWL_API_KEY"):
+            print("✅ Web search API keys loaded successfully from .env.local")
         else:
-            print("⚠️  .env.local file found but missing required keys")
+            print("⚠️  .env.local file found but missing web search keys")
     
     # If .env.local didn't work, check if running in Colab
     try:
@@ -47,17 +46,16 @@ def setup_environment():
         # Set API keys from Colab Secrets
         os.environ["SERPER_API_KEY"] = userdata.get("SERPER_API_KEY")
         os.environ["FIRECRAWL_API_KEY"] = userdata.get("FIRECRAWL_API_KEY")
-        os.environ["GOOGLE_API_KEY"] = userdata.get("GOOGLE_API_KEY")
         
     except ImportError:
         print("⚠️  Running locally - checking environment variables")
         print("Required environment variables:")
         print("  - SERPER_API_KEY (for web search)")
         print("  - FIRECRAWL_API_KEY (for web scraping)")
-        print("  - GOOGLE_API_KEY (for Gemini model)")
+        print("  - GEN_MODEL_API (for LLM model - supports multiple providers)")
         
-        # Check if keys are set
-        required_keys = ["SERPER_API_KEY", "FIRECRAWL_API_KEY", "GOOGLE_API_KEY"]
+        # Check if web search keys are set
+        required_keys = ["SERPER_API_KEY", "FIRECRAWL_API_KEY"]
         missing_keys = [key for key in required_keys if not os.getenv(key)]
         
         if missing_keys:
@@ -65,6 +63,18 @@ def setup_environment():
             print("Please set these variables in .env.local file or as environment variables.")
             return False
     
+    # Check if any LLM provider is available
+    available_providers = ModelConfig.get_available_providers()
+    if not available_providers:
+        print("❌ No LLM providers available")
+        print("Please set one of: GEN_MODEL_API, OPENAI_API_KEY, ANTHROPIC_API_KEY, MISTRAL_API_KEY")
+        return False
+    
+    # Show provider information
+    provider_info = ModelConfig.get_provider_info()
+    print(f"✅ LLM Provider: {provider_info['provider_name']} ({provider_info['default_model']})")
+    print(f"✅ Cost Efficiency: {provider_info['cost_efficiency']}")
+    print("✅ API keys loaded successfully from .env.local")
     return True
 
 
@@ -114,20 +124,22 @@ def load_or_create_company_profile(skip_questionnaire: bool = False, force_new: 
         return CompanyProfile.create_sample_profile()
 
 
-def test_gemini_integration():
-    """Test Gemini LLM integration"""
-    print("🤖 Testing Gemini LLM integration...")
+def test_llm_integration():
+    """Test LLM integration with auto-detection"""
+    print("🤖 Testing LLM integration...")
     
     try:
-        # Test Gemini LLM creation
-        llm = create_gemini_llm_standard()
-        print("✅ Gemini LLM created successfully")
-        print("✅ Gemini integration working!")
+        # Test LLM creation with auto-detection
+        llm = create_standard_llm()
+        provider_info = ModelConfig.get_provider_info()
+        print(f"✅ {provider_info['provider_name']} LLM created successfully")
+        print(f"✅ Using model: {provider_info['default_model']}")
+        print("✅ LLM integration working!")
         
         return True
         
     except Exception as e:
-        print(f"❌ Gemini integration test failed: {e}")
+        print(f"❌ LLM integration test failed: {e}")
         return False
 
 
@@ -182,7 +194,7 @@ def main():
     
     print("🚀 Multi-Agent Research System - Enterprise LLM Market Analysis")
     print("=" * 70)
-    print("🎯 OPTIMIZED FOR MINIMAL GEMINI API USAGE + COMPANY PERSONALIZATION")
+    print("🎯 OPTIMIZED FOR MINIMAL API USAGE + COMPANY PERSONALIZATION")
     print("📊 Expected usage: 500-700 tokens (personalized insights)")
     print("=" * 70)
     
@@ -211,8 +223,8 @@ def main():
         print(f"❌ Error with company profile: {e}")
         return
     
-    # Test Gemini integration
-    if not test_gemini_integration():
+    # Test LLM integration
+    if not test_llm_integration():
         return
     
     # Create personalized crew

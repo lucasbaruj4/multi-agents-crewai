@@ -6,7 +6,7 @@ Expert in finding relevant market data for the multi-agent research system.
 """
 
 from crewai import Agent
-from ..llm.gemini_llm import create_gemini_llm_strict
+from ..llm import create_strict_llm
 
 
 def create_archivist_agent(llm=None) -> Agent:
@@ -20,7 +20,7 @@ def create_archivist_agent(llm=None) -> Agent:
         Configured Archivist agent
     """
     if llm is None:
-        llm = create_gemini_llm_strict()  # Ultra-strict for data collection
+        llm = create_strict_llm()  # Ultra-strict for data collection
     
     return Agent(
         role="Expert in finding relevant market data",

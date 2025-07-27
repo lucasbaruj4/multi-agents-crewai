@@ -5,7 +5,7 @@ Colab Mistral LLM Integration for CrewAI
 Direct LLM wrapper for Colab-hosted Mistral model that bypasses OpenAI compatibility issues.
 """
 
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from scripts.local_mistral_client import ColabMistralClient
 
 
@@ -27,26 +27,46 @@ class ColabMistralLLM:
         self.temperature = temperature
         self.max_tokens = max_tokens
         
-        # CrewAI compatibility attributes
-        self.model = "mistral-7b-instruct-v0.3"
-        self.model_name = "mistral-7b-instruct-v0.3"
+        # CrewAI and LiteLLM compatibility attributes
+        self.model = "custom/mistral-7b-instruct-v0.3"  # Add custom provider
+        self.model_name = "custom/mistral-7b-instruct-v0.3"
+        self.provider = "custom"
+        
+        # Additional LiteLLM compatibility
+        self._llm_type = "custom"
+        self.api_base = "https://mistral-server.loca.lt"
+        self.api_key = "dummy-key"  # Required by LiteLLM but not used
     
     def health_check(self) -> Dict[str, Any]:
         """Check if the API server is healthy"""
         return self.client.health_check()
     
-    def generate(self, prompt: str, **kwargs) -> str:
+    def generate(self, messages, **kwargs) -> str:
         """
         Generate text using the remote Mistral model
         
         Args:
-            prompt: The input prompt
+            messages: Chat messages (CrewAI format) or string prompt
             **kwargs: Additional generation parameters
                 
         Returns:
             Generated text response
         """
         try:
+            # Handle different input formats
+            if isinstance(messages, list):
+                # Extract content from chat messages format
+                prompt = ""
+                for msg in messages:
+                    if isinstance(msg, dict) and 'content' in msg:
+                        prompt += f"{msg.get('role', 'user')}: {msg['content']}\n"
+                    else:
+                        prompt += str(msg) + "\n"
+            elif isinstance(messages, str):
+                prompt = messages
+            else:
+                prompt = str(messages)
+            
             # Extract parameters with defaults
             max_tokens = kwargs.get('max_tokens', self.max_tokens)
             temperature = kwargs.get('temperature', self.temperature)
@@ -66,17 +86,16 @@ class ColabMistralLLM:
                 
         except Exception as e:
             print(f"Error generating text: {e}")
-            # Return a fallback response for testing
-            return f"Error occurred: {str(e)}"
+            return f"I apologize, but I'm currently unable to process this request due to a connection issue with the AI model. Error: {str(e)}"
     
     def get_model_info(self) -> Dict[str, Any]:
         """Get information about the loaded model"""
         return self.client.get_model_info()
     
     # CrewAI compatibility methods
-    def __call__(self, prompt: str, **kwargs) -> str:
+    def __call__(self, messages, **kwargs) -> str:
         """Make the class callable for CrewAI compatibility"""
-        return self.generate(prompt, **kwargs)
+        return self.generate(messages, **kwargs)
     
     def _call(self, prompt: str, **kwargs) -> str:
         """Internal method called by CrewAI framework"""
@@ -84,14 +103,19 @@ class ColabMistralLLM:
     
     def invoke(self, input_data, **kwargs) -> str:
         """CrewAI invoke method compatibility"""
-        if isinstance(input_data, str):
-            return self.generate(input_data, **kwargs)
-        elif isinstance(input_data, dict) and 'prompt' in input_data:
-            return self.generate(input_data['prompt'], **kwargs)
-        else:
-            return self.generate(str(input_data), **kwargs)
+        return self.generate(input_data, **kwargs)
     
-    def get_supported_params(self) -> list:
+    def completion(self, messages, **kwargs):
+        """LiteLLM-style completion method"""
+        response = self.generate(messages, **kwargs)
+        # Return in LiteLLM format
+        return type('MockResponse', (), {
+            'choices': [type('Choice', (), {
+                'message': type('Message', (), {'content': response})()
+            })()]
+        })()
+    
+    def get_supported_params(self) -> List[str]:
         """Return supported parameters for CrewAI"""
         return ["temperature", "max_tokens", "top_p", "frequency_penalty", "presence_penalty"]
     

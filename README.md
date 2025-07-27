@@ -36,8 +36,8 @@ The system performs 7 sequential tasks:
 - Google Colab Pro (recommended) or free tier
 - API keys for:
   - SerperDev (web search)
-  - Google API (optional backup)
   - Firecrawl (web scraping)
+  - Note: Google API not needed (using Colab Mistral instead of Gemini)
 
 ### Setup
 
@@ -57,8 +57,8 @@ The system performs 7 sequential tasks:
    **Option A: Environment Variables (Local)**
    ```bash
    export SERPER_API_KEY="your_serper_api_key"
-   export GOOGLE_API_KEY="your_google_api_key"
    export FIRECRAWL_API_KEY="your_firecrawl_api_key"
+   # Note: GOOGLE_API_KEY not needed - using Colab Mistral
    ```
    
    **Option B: Colab Secrets (Recommended)**

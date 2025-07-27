@@ -7,6 +7,7 @@ Enterprise LLM Market Analysis using CrewAI and Colab-hosted Mistral model.
 
 import os
 import sys
+from dotenv import load_dotenv
 from crewai import Crew, Process
 from src.agents import Archivist, Shadow, Seer, Nexus
 from src.tasks import (
@@ -20,35 +21,50 @@ from src.tasks import (
 )
 from src.llm.colab_mistral_llm import test_colab_mistral_llm
 
+# Add src to path for imports
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+
 
 def setup_environment():
     """Setup environment variables and API keys"""
     print("🔧 Setting up environment...")
     
-    # Check if running in Colab (for API key access)
+    # First, try to load from .env.local file
+    env_file = ".env.local"
+    if os.path.exists(env_file):
+        print(f"✅ Loading environment variables from {env_file}")
+        load_dotenv(env_file)
+        
+        # Check if keys were loaded successfully
+        if os.getenv("SERPER_API_KEY") and os.getenv("FIRECRAWL_API_KEY"):
+            print("✅ API keys loaded successfully from .env.local")
+            return True
+        else:
+            print("⚠️  .env.local file found but missing required keys")
+    
+    # If .env.local didn't work, check if running in Colab
     try:
         from google.colab import userdata
         print("✅ Running in Google Colab - using Colab Secrets")
         
         # Set API keys from Colab Secrets
         os.environ["SERPER_API_KEY"] = userdata.get("SERPER_API_KEY")
-        os.environ["GOOGLE_API_KEY"] = userdata.get("GOOGLE_API_KEY")
         os.environ["FIRECRAWL_API_KEY"] = userdata.get("FIRECRAWL_API_KEY")
         
     except ImportError:
-        print("⚠️  Running locally - please ensure API keys are set in environment variables")
+        print("⚠️  Running locally - checking environment variables")
         print("Required environment variables:")
-        print("  - SERPER_API_KEY")
-        print("  - GOOGLE_API_KEY") 
-        print("  - FIRECRAWL_API_KEY")
+        print("  - SERPER_API_KEY (for web search)")
+        print("  - FIRECRAWL_API_KEY (for web scraping)")
+        print("Note: GOOGLE_API_KEY not needed since we're using Colab Mistral model")
         
         # Check if keys are set
-        required_keys = ["SERPER_API_KEY", "GOOGLE_API_KEY", "FIRECRAWL_API_KEY"]
+        required_keys = ["SERPER_API_KEY", "FIRECRAWL_API_KEY"]
         missing_keys = [key for key in required_keys if not os.getenv(key)]
         
         if missing_keys:
             print(f"❌ Missing environment variables: {missing_keys}")
-            print("Please set these variables before running the script.")
+            print("Please set these variables in .env.local file or as environment variables.")
             return False
     
     return True

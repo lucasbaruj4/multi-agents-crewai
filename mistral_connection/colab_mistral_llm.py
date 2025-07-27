@@ -1,17 +1,23 @@
 """
-Colab Mistral LLM Integration for CrewAI
-=======================================
+Colab Mistral LLM Integration Module
+===================================
 
-Direct LLM wrapper for Colab-hosted Mistral model that bypasses OpenAI compatibility issues.
+Custom LLM wrapper for Colab-hosted Mistral model to work with CrewAI.
 """
 
-from typing import Optional, Dict, Any, List
+import sys
+import os
+from typing import Dict, Any, List
+from crewai.llm import LLM
 from scripts.local_mistral_client import ColabMistralClient
 
+# Add src to path for imports
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-class ColabMistralLLM:
+
+class ColabMistralLLM(LLM):
     """
-    Direct LLM wrapper for CrewAI that communicates with our Colab server
+    Custom LLM wrapper for Colab-hosted Mistral model that works with CrewAI
     without requiring OpenAI API compatibility
     """
     
@@ -23,12 +29,15 @@ class ColabMistralLLM:
             temperature: Sampling temperature for text generation
             max_tokens: Maximum tokens to generate
         """
+        # Call parent constructor with model name
+        super().__init__(model="custom/mistral-7b-instruct-v0.3")
+        
         self.client = ColabMistralClient()
         self.temperature = temperature
         self.max_tokens = max_tokens
         
         # CrewAI and LiteLLM compatibility attributes
-        self.model = "custom/mistral-7b-instruct-v0.3"  # Add custom provider
+        self.model = "custom/mistral-7b-instruct-v0.3"
         self.model_name = "custom/mistral-7b-instruct-v0.3"
         self.provider = "custom"
         
@@ -36,6 +45,12 @@ class ColabMistralLLM:
         self._llm_type = "custom"
         self.api_base = "https://mistral-server.loca.lt"
         self.api_key = "dummy-key"  # Required by LiteLLM but not used
+        
+        # CrewAI specific attributes
+        self.llm_type = "custom"
+        self.verbose = True
+        self.max_retries = 3
+        self.timeout = 30
     
     def health_check(self) -> Dict[str, Any]:
         """Check if the API server is healthy"""
@@ -115,13 +130,17 @@ class ColabMistralLLM:
             })()]
         })()
     
+    def chat_completion(self, messages, **kwargs):
+        """Chat completion method for CrewAI compatibility"""
+        return self.completion(messages, **kwargs)
+    
     def get_supported_params(self) -> List[str]:
-        """Return supported parameters for CrewAI"""
-        return ["temperature", "max_tokens", "top_p", "frequency_penalty", "presence_penalty"]
+        """Get list of supported parameters"""
+        return ['temperature', 'max_tokens', 'top_k', 'do_sample']
     
     def get_model_name(self) -> str:
-        """Return model name for CrewAI"""
-        return self.model_name
+        """Get the model name"""
+        return "custom/mistral-7b-instruct-v0.3"
 
 
 def create_colab_mistral_llm(temperature: float = 0.7, max_tokens: int = 2048) -> ColabMistralLLM:

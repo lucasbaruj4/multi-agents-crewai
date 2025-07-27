@@ -1,17 +1,12 @@
 """
-Agents Package
-=============
+Agents Module
+============
 
-CrewAI agents for the multi-agent research system:
-- Archivist: Expert in finding relevant market data
-- Shadow: Expert in dissecting competitor strategies
-- Seer: Expert analyst in identifying critical shifts
-- Nexus: Expert in concise and actionable reporting
+Multi-agent research system agents for enterprise LLM market analysis.
 """
 
-from .archivist import Archivist
-from .shadow import Shadow
-from .seer import Seer
-from .nexus import Nexus
+from .archivist import create_archivist_agent
+from .shadow import create_shadow_agent
+from .nexus import create_nexus_agent
 
-__all__ = ['Archivist', 'Shadow', 'Seer', 'Nexus'] 
+__all__ = ['create_archivist_agent', 'create_shadow_agent', 'create_nexus_agent'] 

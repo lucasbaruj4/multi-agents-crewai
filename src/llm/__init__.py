@@ -1,10 +1,18 @@
 """
-LLM Package
-==========
+LLM Integration Module
+=====================
 
-LLM integration and configuration for the multi-agent research system.
+LLM integration components for the multi-agent research system.
 """
 
-from .colab_mistral_llm import ColabMistralLLM
+from .gemini_llm import (
+    create_gemini_llm,
+    create_gemini_llm_strict,
+    create_gemini_llm_standard
+)
 
-__all__ = ['ColabMistralLLM'] 
+__all__ = [
+    'create_gemini_llm',
+    'create_gemini_llm_strict', 
+    'create_gemini_llm_standard'
+] 

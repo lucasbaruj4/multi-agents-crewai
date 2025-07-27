@@ -10,6 +10,8 @@ Modules:
 - agents: CrewAI agents (Archivist, Shadow, Seer, Nexus)
 - tasks: Market analysis tasks and workflows
 - llm: LLM integration and configuration
+- company_profile: Company profile management and executive questionnaire
+- templates: Context injection and template management
 """
 
 __version__ = "1.0.0"
